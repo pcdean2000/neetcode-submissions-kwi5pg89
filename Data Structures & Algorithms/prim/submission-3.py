@@ -1,0 +1,27 @@
+class Solution:
+    def minimumSpanningTree(self, n: int, edges: List[List[int]]) -> int:
+        adj = defaultdict(list)
+        for u, v, w in edges:
+            adj[u].append((v, w))
+            adj[v].append((u, w))
+
+        heap_edges = []
+        visit = set()
+        for v, w in adj[0]:
+            heapq.heappush(heap_edges, (w, 0, v))
+        visit.add(0)
+
+        total = 0
+        while len(visit) < n and heap_edges:
+            w, u, v = heapq.heappop(heap_edges)
+            if v in visit:
+                continue
+            total += w
+            u = v
+            for v, w in adj[u]:
+                if v in visit:
+                    continue
+                heapq.heappush(heap_edges, (w, u, v))
+            visit.add(u)
+        
+        return total if len(visit) == n else -1
